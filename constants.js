@@ -7,6 +7,8 @@ const DEBUG_INVINCIBLE = false;
 const DEBUG_SKIP_MENU = false;
 const DEBUG_MOVE_ON_PRESS = false; // If true, player moves only on keypress
 
+const CAN_EXIT_WINDOW = 1000;
+
 const NUM_OF_LEVELS = 20;
 const WIDTH = 49;
 const HEIGHT = 49;

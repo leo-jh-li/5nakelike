@@ -4,6 +4,8 @@ var endTime = 0
 var GameMode = Object.freeze({'MENU':1, 'CLASS_SELECT':2, 'PLAYING':3, 'GAME_OVER':4, 'EXIT':5});
 var gameMode = GameMode.MENU;
 
+var canExit = false;
+
 function setup() {
 	calculateGradientColours();
 }
@@ -13,6 +15,7 @@ function reinitializeValues() {
 	levelStorage.length = 0;
 	generatedLevelsCount = 0;
 	health = playerRole.maxHp;
+	mana = 0;
 	playerDir = Direction.NO_DIRECTION;
 	currVisionRadius = MAX_VISION_RADIUS;
 	moveQueue.length = 0;
@@ -46,6 +49,12 @@ function startGame() {
 function endGame() {
 	gameMode = GameMode.GAME_OVER;
 	endTime = new Date().getTime();
+}
+
+function returnToMenu() {
+	eraseDisplay();
+	gameMode = GameMode.MENU;
+	main();
 }
 
 // Checks if player has lost the game and ends the game if so.
@@ -180,13 +189,16 @@ window.addEventListener('keydown', event => {
 				}
 				break;
 			case 'Escape':
-				if (DEBUG_BUTTONS) {
-					// Restart game
-					eraseDisplay();
-					gameMode = GameMode.MENU;
-					main();
+				if (canExit) {
+					returnToMenu();
+				} else {
+					// Open the "return to main menu" window for CAN_EXIT_WINDOW duration
+					canExit = true;
+					setTimeout(function() {
+						canExit = false;
+					}, CAN_EXIT_WINDOW);
 				}
-				break;
+
 		}
 		if (validButtonPressed && playerState == PlayerState.ACTIVE) {
 			var dest = applyMovement(playerCoord, dir);
@@ -212,9 +224,7 @@ window.addEventListener('keydown', event => {
 	} else if (gameMode == GameMode.GAME_OVER) {
 		// Press enter to continue
 		if (event.key == 'Enter') {
-			eraseDisplay();
-			gameMode = GameMode.MENU;
-			main();
+			returnToMenu();
 		}
 	}
 });
