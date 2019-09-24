@@ -129,10 +129,10 @@ function takeDamage(value) {
 	if (shielded) {
 		shielded = false;
 		damageBlocked += value;
-		health = clamp(health, 0, playerRole.maxHp);
 		return false;
 	} else {
 		health -= value;
+		health = clamp(health, 0, playerRole.maxHp);
 		return true;
 	}
 }
